@@ -1,6 +1,6 @@
 {
-  "token": "OTU4MDQ4NjM0MDAyMzYyNDQ5.YkHqUg.257vlkQbxBhfy-Qz1oPEru4ZR2Q",
-  "clientId": "958048634002362449",
-  "guildId": "958049312644943963",
+  "token": "your token",
+  "clientId": "client id",
+  "guildId": "server id",
   "prefix": "!"
 }
