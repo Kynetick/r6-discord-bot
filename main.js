@@ -3,7 +3,6 @@ const { Client, Intents } = require('discord.js');
 const { prefix, token } = require('./config.json');
 
 //importing needed functions
-const {chat_func} = require('./chat_commands.js');
 const {stats} = require('./r6stats.js')
 
 // Create a new client instance
