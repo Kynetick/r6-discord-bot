@@ -2,7 +2,7 @@ const {prefix} = require("./config.json");
 require('dotenv').config();
 const R6API = require('r6api.js').default;
 const { MessageEmbed } = require('discord.js');
-const {size} = require("ffmpeg/lib/presets");
+const currentSeason = "26";
 
 const { UBI_EMAIL: email = '', UBI_PASSWORD: password = '' } = process.env;
 const r6api = new R6API({ email, password });
@@ -27,49 +27,39 @@ module.exports.stats = async (message) => {
 
         const { 0: rank } = await r6api.getRanks(platform, player.id, { regionIds: 'emea', boardIds: 'pvp_ranked' });
             if (!rank) return;
-        const { seasons: { 25: { regions: { emea: { boards: { pvp_ranked }} } } } } = rank;
+        const { seasons: { 26: { regions: { emea: { boards: { pvp_ranked }} } } } } = rank;
         //console.log(pvp_ranked);
 
         const { 0: level } = await r6api.getProgression(platform, player.id);
 
-        const exampleEmbed = new MessageEmbed({
-            color: 0x0099ff,
-            //title: 'Some title',
+        const embedAuthor = {
+            name: `${player.username}`,
+            iconURL: `${player.avatar["146"]}`,
             //url: 'https://discord.js.org',
-            author: {
-                name: `${player.username}`,
-                icon_url: `${player.avatar["146"]}`,
-                //url: 'https://discord.js.org',
-            },
-            description: `${player.username}'s stats for current season`,
-            thumbnail: {
-                url: `${rank.seasons["25"].regions.emea.boards.pvp_ranked.current.icon}`,
-            },
-            fields: [
-                {
-                    name: 'Level', value: `${level.level}`, inline: true,
-                },
-                {
-                    name: 'K/D', value: `${rank.seasons["25"].regions.emea.boards.pvp_ranked.kd}`, inline: true,
-                },
-            ],
-            fields: [
-                {
-                    name: 'MMR', value: `${rank.seasons["25"].regions.emea.boards.pvp_ranked.current.name}`, inline: true,
-                },
-                {
-                    name: 'MMR', value: `${rank.seasons["25"].regions.emea.boards.pvp_ranked.current.mmr}`, inline: true,
-                }
-            ],
-            timestamp: new Date(),
-            footer: {
-                text: 'Kynetick 2022',
-                //icon_url: 'https://i.imgur.com/AfFp7pu.png',
-            },
-        })
+        }
+
+        const statsEmbed = new MessageEmbed()
+            .setColor('#0099ff')
+            .setAuthor({ name: `${player.username}`, iconURL: `${player.avatar["146"]}`})
+            .setDescription(`${player.username}'s stats for current season`)
+            .setThumbnail(`${rank.seasons[currentSeason].regions.emea.boards.pvp_ranked.current.icon}`)
+            .addFields(
+                { name: 'Level', value: `${level.level}`, inline: true },
+                { name: 'K/D', value: `${rank.seasons[currentSeason].regions.emea.boards.pvp_ranked.kd}`, inline: true },
+                { name: 'Matches', value: `${rank.seasons[currentSeason].regions.emea.boards.pvp_ranked.matches}`, inline: true },
+                //{ name: '\u200B', value: '\u200B', inline: true },
+                { name: 'Max', value: `${rank.seasons[currentSeason].regions.emea.boards.pvp_ranked.max.name}`, inline: true },
+                { name: 'Rank', value: `${rank.seasons[currentSeason].regions.emea.boards.pvp_ranked.current.name}`, inline: true },
+                { name: 'MMR', value: `${rank.seasons[currentSeason].regions.emea.boards.pvp_ranked.current.mmr}`, inline: true },
+                { name: 'Winrate', value: `${rank.seasons[currentSeason].regions.emea.boards.pvp_ranked.winRate}`, inline: true },
+                { name: 'Wins', value: `${rank.seasons[currentSeason].regions.emea.boards.pvp_ranked.wins}`, inline: true },
+                { name: 'Losses', value: `${rank.seasons[currentSeason].regions.emea.boards.pvp_ranked.losses}`, inline: true }
+            )
+            .setTimestamp()
+            .setFooter({ text: 'Kynetick 2022', iconURL: 'https://i.imgur.com/AfFp7pu.png' });
 
     console.log('Stats displayed');
-    return message.channel.send({ embeds: [exampleEmbed] });
+    return message.channel.send({ embeds: [statsEmbed] });
 
     } else if (message.content.startsWith(prefix) && (!message.author.bot)) { //checks if the message starts with the prefix and was not sent by bot
         message.channel.send("You need to enter a valid command !");
