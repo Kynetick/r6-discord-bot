@@ -4,7 +4,9 @@ const R6API = require('r6api.js').default;
 const { MessageEmbed } = require('discord.js');
 const currentSeason = "26";
 
-const { UBI_EMAIL: email = '', UBI_PASSWORD: password = '' } = process.env;
+const { UBI_EMAIL: email = '' } = process.env.UBI_EMAIL;
+const { UBI_PASSWORD: password = '' } = process.env.UBI_PASSWORD;
+
 const r6api = new R6API({ email, password });
 
 // export default async () => { // ES6
